@@ -378,8 +378,8 @@
             <div>
                 <h5 class="font-bold text-[10px] uppercase tracking-[0.4em] mb-10 text-gray-900">Compliance</h5>
                 <ul class="text-sm text-gray-400 space-y-5">
-                    <li><a href="#" id="privacyBtn" class="hover:text-brand transition-colors">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-brand transition-colors">Terms of Service</a></li>
+                    <li><a href="https://bible-chat.github.io/privacy_policy" class="hover:text-brand transition-colors">Privacy Policy</a></li>
+                    <li><a href="https://bible-chat.github.io/terms_of_service" class="hover:text-brand transition-colors">Terms of Service</a></li>
                 </ul>
             </div>
         </div>
@@ -389,11 +389,11 @@
         </div>
     </footer>
 
-    <!-- Privacy Modal -->
+    <!-- Privacy Modal (保持保留供其他可能的应用内调用，但页脚链接现在直接跳转) -->
     <div id="privacyModal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden items-center justify-center p-6">
         <div class="bg-white w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-[4rem] p-16 shadow-2xl relative">
             <button onclick="closePrivacy()" class="absolute top-12 right-12 text-gray-300 hover:text-gray-900 transition-colors p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap=\"round" stroke-linejoin=\"round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <img src="http://collageresource.thinkyeah.com/bible/bible_logo.png" alt="Logo" class="w-14 h-14 mx-auto mb-10">
             <h2 class="serif text-4xl font-bold mb-10 text-center">Privacy Policy</h2>
@@ -464,14 +464,9 @@
             }
         };
 
-        // 弹窗逻辑
+        // 弹窗逻辑 (如果需要可以继续使用，但页脚链接已改为直跳)
         const modal = document.getElementById('privacyModal');
-        document.getElementById('privacyBtn').onclick = (e) => {
-            e.preventDefault();
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        };
+        // 如果有其他元素需要调用弹窗，可以保留。页脚链接已通过 href 直接跳转。
         function closePrivacy() {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
