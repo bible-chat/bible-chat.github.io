@@ -1,1 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BibleChat - Your AI Spiritual Companion | Sacred Connection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#C29162',
+                            light: '#f4ece4',
+                            dark: '#a6794d',
+                        },
+                        cream: '#fdfaf7',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #fdfaf7; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden;
+        }
+        
+        .serif { font-family: 'Playfair Display', serif; }
+        
+        /* --- 动画系统 --- */
+        
+        /* 手机浮动 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1.2deg); }
+        }
+        .float-animation { animation: float 6s ease-in-out infinite; }
 
+        /* 背景流体 */
+        @keyframes blob-move {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -60px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+        .animate-blob { animation: blob-move 12s infinite alternate ease-in-out; }
+
+        /* 神圣粒子 */
+        @keyframes float-particle {
+            0% { transform: translateY(0) opacity: 0; }
+            20% { opacity: 0.4; }
+            80% { opacity: 0.4; }
+            100% { transform: translateY(-100vh) opacity: 0; }
+        }
+        .particle {
+            position: fixed;
+            background: #C29162;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 滚动显现 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .reveal.active {
+            opacity: 1 !important;
+            transform: translate(0, 0) !important;
+        }
+
+        /* 渐变文字 */
+        .gradient-text {
+            background: linear-gradient(135deg, #C29162, #a6794d, #C29162);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 4s linear infinite;
+        }
+        @keyframes gradient-shift {
+            to { background-position: 200% center; }
+        }
+
+        /* 按钮脉冲 */
+        .btn-pulse:hover {
+            box-shadow: 0 0 0 15px rgba(194, 145, 98, 0);
+            animation: pulse-glow 1.5s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(194, 145, 98, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(194, 145, 98, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(194, 145, 98, 0); }
+        }
+
+        /* 图片发光效果 */
+        .divine-image-glow {
+            box-shadow: 0 30px 60px rgba(194, 145, 98, 0.15);
+        }
+    </style>
+</head>
+<body class="text-gray-900 selection:bg-brand-light">
+
+    <div id="particle-container" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
+
+    <!-- 导航栏 -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-6">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex justify-between items-center">
+            <div class="flex items-center space-x-3 group cursor-pointer">
+                <img src="http://collageresource.thinkyeah.com/bible/bible_logo.png" alt="BibleChat Logo" class="w-10 h-10 object-contain group-hover:rotate-[360deg] transition-transform duration-1000">
+                <span class="text-2xl font-bold tracking-tight">BibleChat</span>
+            </div>
+            <div class="hidden md:flex space-x-10 text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                <a href="#experience" class="hover:text-brand transition-colors">Experience</a>
+                <a href="#integrity" class="hover:text-brand transition-colors">Integrity</a>
+                <a href="#support" class="hover:text-brand transition-colors">Support</a>
+            </div>
+            <a href="#experience" class="bg-black text-white px-7 py-3 rounded-full text-[10px] font-black tracking-[0.1em] hover:bg-brand transition-all duration-300 shadow-xl shadow-black/10 active:scale-95">GET STARTED</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-48 pb-32 overflow-hidden min-h-screen flex items-center">
+        <!-- 装饰背景 -->
+        <div class="absolute top-1/4 -right-20 w-96 h-96 bg-brand/10 rounded-full blur-[100px] animate-blob"></div>
+        <div class="absolute bottom-1/4 -left-20 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[120px] animate-blob" style="animation-delay: -2s"></div>
+        <div id="mouse-glow" class="absolute w-[600px] h-[600px] bg-brand/5 rounded-full blur-[150px] pointer-events-none opacity-0 transition-opacity duration-700"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 grid md:grid-cols-2 gap-16 items-center relative z-10">
+            <div class="opacity-100 transition-all duration-1000">
+                <div class="inline-flex items-center px-4 py-1.5 mb-8 rounded-full bg-white/80 backdrop-blur-sm border border-brand-light shadow-sm">
+                    <span class="w-2 h-2 bg-brand rounded-full mr-3 animate-pulse"></span>
+                    <span class="text-[10px] font-bold text-brand uppercase tracking-widest italic">Sacred AI Companion</span>
+                </div>
+                <h1 class="serif text-6xl lg:text-8xl font-bold text-gray-900 leading-[1.05] mb-8">
+                    Walk in the <br><span class="gradient-text">Divine Light</span>
+                </h1>
+                <p class="text-xl text-gray-500 mb-12 max-w-lg leading-relaxed font-light">
+                    Experience Scripture through a living conversation. Tailored guidance for your unique spiritual journey, rooted in timeless truth.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#experience" class="bg-brand text-white px-10 py-4 rounded-2xl font-bold hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 active:scale-95 btn-pulse">Explore Features</a>
+                </div>
+            </div>
+            
+            <div class="relative flex justify-center">
+                <div class="float-animation relative z-10">
+                    <div class="w-72 h-[580px] bg-white rounded-[3.5rem] p-3 shadow-[0_50px_100px_rgba(194,145,98,0.15)] ring-1 ring-brand-light overflow-hidden">
+                        <div class="h-full w-full bg-white rounded-[2.8rem] overflow-hidden flex flex-col">
+                            <div class="p-6 bg-cream border-b border-gray-50 text-center">
+                                <img src="http://collageresource.thinkyeah.com/bible/bible_logo.png" alt="Logo" class="w-6 h-6 mx-auto mb-2 opacity-80">
+                                <div class="text-[11px] font-bold serif italic">"Psalm 23"</div>
+                            </div>
+                            <div class="flex-grow p-5 space-y-4">
+                                <div class="bg-brand-light/50 p-4 rounded-2xl rounded-bl-none text-[10px] text-gray-500 italic">
+                                    "The Lord is my shepherd..."
+                                </div>
+                                <div class="bg-brand p-4 rounded-2xl rounded-br-none text-[11px] text-white shadow-lg font-semibold">
+                                    How can I apply this peace at work today?
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-2xl rounded-bl-none text-[10px] text-gray-800 leading-relaxed border border-brand-light">
+                                    Trusting your Shepherd means He is in control. Take a breath during meetings...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-32 space-y-64 bg-white/30">
+        
+        <!-- Feature 1: Morning & Evening Prayer -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col md:flex-row items-center gap-20">
+                <div class="md:w-1/2 reveal">
+                    <div class="relative rounded-[3.5rem] overflow-hidden divine-image-glow group transition-transform duration-500 hover:-translate-y-2">
+                        <img src="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=2000&auto=format&fit=crop" alt="Prayer" class="w-full h-[600px] object-cover group-hover:scale-110 transition-transform duration-[2s]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-12">
+                            <p class="text-brand text-2xl serif italic">"Let my prayer be set before you as incense."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 space-y-8 reveal" style="transition-delay: 0.2s;">
+                    <span class="text-brand font-black text-[10px] tracking-[0.4em] uppercase">Rhythm</span>
+                    <h2 class="serif text-5xl font-bold leading-tight">Morning & Evening <br><span class="text-brand italic font-medium">Sacred Rhythms</span></h2>
+                    <p class="text-gray-500 text-lg leading-relaxed font-light">
+                        Restore the ancient tradition of daily liturgy. BibleChat creates a rhythmic sanctuary for your soul, helping you start with gratitude and rest in protection.
+                    </p>
+                    <div class="pt-4 flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand">
+                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-gray-700">Daily Sunrise Liturgies</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 2: Daily Devotion -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col md:flex-row-reverse items-center gap-20">
+                <div class="md:w-1/2 reveal">
+                    <div class="relative rounded-[3.5rem] overflow-hidden divine-image-glow group transition-transform duration-500 hover:-translate-y-2">
+                        <img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=2000&auto=format&fit=crop" alt="Devotion" class="w-full h-[600px] object-cover group-hover:scale-110 transition-transform duration-[2s]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-12">
+                            <p class="text-brand text-2xl serif italic">"The grass withers, the word remains."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 space-y-8 reveal" style="transition-delay: 0.2s;">
+                    <span class="text-brand font-black text-[10px] tracking-[0.4em] uppercase">Guidance</span>
+                    <h2 class="serif text-5xl font-bold leading-tight text-gray-900">Personalized <br><span class="text-brand italic font-medium">Daily Devotion</span></h2>
+                    <p class="text-gray-500 text-lg leading-relaxed font-light">
+                        Every day is a new step in your faith. Our AI pairs deep scriptural study with your personal growth needs, providing insights that feel written for your heart.
+                    </p>
+                    <div class="grid grid-cols-2 gap-6 pt-4">
+                        <div class="p-6 bg-white border border-brand-light rounded-3xl shadow-sm hover-lift">
+                            <p class="text-brand font-black text-[9px] mb-2 tracking-[0.2em]">HERITAGE</p>
+                            <p class="text-gray-400 text-xs leading-relaxed font-light">Rooted in centuries of theological wisdom.</p>
+                        </div>
+                        <div class="p-6 bg-white border border-brand-light rounded-3xl shadow-sm hover-lift">
+                            <p class="text-brand font-black text-[9px] mb-2 tracking-[0.2em]">GROWTH</p>
+                            <p class="text-gray-400 text-xs leading-relaxed font-light">Adapts to your maturing spiritual walk.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 3: Prayer Room -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col md:flex-row items-center gap-20">
+                <div class="md:w-1/2 reveal">
+                    <div class="relative rounded-[3.5rem] overflow-hidden divine-image-glow group transition-transform duration-500 hover:-translate-y-2">
+                        <img src="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=2000&auto=format&fit=crop" alt="Prayer Room" class="w-full h-[600px] object-cover group-hover:scale-110 transition-transform duration-[2s]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-12">
+                            <p class="text-brand text-2xl serif italic">"In the shadow of your wings."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 space-y-8 reveal" style="transition-delay: 0.2s;">
+                    <span class="text-brand font-black text-[10px] tracking-[0.4em] uppercase">Sanctuary</span>
+                    <h2 class="serif text-5xl font-bold leading-tight text-gray-900">The Sacred <br><span class="text-brand italic font-medium">Prayer Room</span></h2>
+                    <p class="text-gray-500 text-lg leading-relaxed font-light">
+                        A digital sanctuary for your most intimate conversations. Pour out your soul, find peace, and record God's whispers in a space designed solely for connection.
+                    </p>
+                    <div class="p-8 bg-brand-light/30 rounded-[2.5rem] border border-brand/10">
+                        <p class="text-brand font-bold text-sm mb-4 italic">"True communion in a distracted world."</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-4 py-1.5 bg-white rounded-full text-[9px] font-bold text-gray-500 border border-brand-light uppercase tracking-wider">Encrypted Journals</span>
+                            <span class="px-4 py-1.5 bg-white rounded-full text-[9px] font-bold text-gray-500 border border-brand-light uppercase tracking-wider">Intercessory Lists</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature 4: Personalized Reminder -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col md:flex-row-reverse items-center gap-20">
+                <div class="md:w-1/2 reveal">
+                    <div class="relative rounded-[3.5rem] overflow-hidden divine-image-glow group transition-transform duration-500 hover:-translate-y-2">
+                        <img src="https://images.unsplash.com/photo-1438032005730-c779502df39b?q=80&w=2000&auto=format&fit=crop" alt="Reminders" class="w-full h-[600px] object-cover group-hover:scale-110 transition-transform duration-[2s]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-12">
+                            <p class="text-brand text-2xl serif italic">"Be still, and know that I am."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 space-y-8 reveal" style="transition-delay: 0.2s;">
+                    <span class="text-brand font-black text-[10px] tracking-[0.4em] uppercase">Awareness</span>
+                    <h2 class="serif text-5xl font-bold leading-tight text-gray-900">Whispers of <br><span class="text-brand italic font-medium">Divine Grace</span></h2>
+                    <p class="text-gray-500 text-lg leading-relaxed font-light">
+                        God's Word is never static. Receive timely reminders that act as an anchor for your soul, ensuring your focus remains on the eternal throughout the modern noise.
+                    </p>
+                    <div class="flex items-center space-x-12 pt-4">
+                        <div>
+                            <p class="text-brand font-bold text-3xl">Eternal</p>
+                            <p class="text-gray-400 text-[9px] uppercase tracking-widest font-black mt-1">Focus</p>
+                        </div>
+                        <div class="w-px h-10 bg-brand-light"></div>
+                        <div>
+                            <p class="text-brand font-bold text-3xl">Daily</p>
+                            <p class="text-gray-400 text-[9px] uppercase tracking-widest font-black mt-1">Presence</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Grid -->
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-20 reveal">
+                <span class="text-brand font-black text-[10px] tracking-[0.4em] uppercase mb-4 block">Overview</span>
+                <h2 class="serif text-6xl font-bold">Designed for Devotion</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white/80 backdrop-blur-sm p-12 rounded-[3.5rem] border border-brand-light hover:shadow-2xl hover:-translate-y-2 transition-all reveal">
+                    <div class="w-14 h-14 bg-brand-light rounded-2xl mb-10 flex items-center justify-center text-brand">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <h4 class="serif text-3xl font-bold mb-6">Deep Study</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed font-light">Explore Scripture with an AI that understands context, history, and theology.</p>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm p-12 rounded-[3.5rem] border border-brand-light hover:shadow-2xl hover:-translate-y-2 transition-all reveal" style="transition-delay: 0.2s;">
+                    <div class="w-14 h-14 bg-brand-light rounded-2xl mb-10 flex items-center justify-center text-brand">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    </div>
+                    <h4 class="serif text-3xl font-bold mb-6">Prayer Room</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed font-light">A safe digital haven to pour out your soul and keep track of your growth.</p>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm p-12 rounded-[3.5rem] border border-brand-light hover:shadow-2xl hover:-translate-y-2 transition-all reveal" style="transition-delay: 0.4s;">
+                    <div class="w-14 h-14 bg-brand-light rounded-2xl mb-10 flex items-center justify-center text-brand">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </div>
+                    <h4 class="serif text-3xl font-bold mb-6">Timely Whispers</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed font-light">Receive gentle reminders exactly when you need them most to stay focused.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrity Section -->
+    <section id="integrity" class="py-32 bg-white/50 backdrop-blur-md border-y border-brand-light">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-24 items-center">
+            <div class="reveal">
+                <h2 class="serif text-5xl font-bold mb-12 leading-tight">Scriptural Integrity <br>as our Foundation</h2>
+                <div class="space-y-12">
+                    <div class="flex gap-10 group">
+                        <span class="text-brand/20 font-black text-6xl serif group-hover:text-brand transition-colors duration-700">01</span>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-3 text-lg tracking-tight">Theological Curation</h4>
+                            <p class="text-gray-400 text-sm font-light leading-relaxed">We consult with theologians to ensure AI responses respect denominational nuances.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-10 group">
+                        <span class="text-brand/20 font-black text-6xl serif group-hover:text-brand transition-colors duration-700">02</span>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-3 text-lg tracking-tight">Absolute Sanctity</h4>
+                            <p class="text-gray-400 text-sm font-light leading-relaxed">Your spiritual data is siloed and encrypted. We do not sell your prayers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reveal" style="transition-delay: 0.3s;">
+                <div class="bg-brand-light/40 p-16 rounded-[4rem] relative overflow-hidden group text-center lg:text-left">
+                    <h3 class="serif text-4xl font-bold mb-10 italic leading-snug">"Building the Kingdom through technology."</h3>
+                    <p class="text-gray-600 font-light mb-12 text-lg">Experience a more intentional way to engage with the Word today.</p>
+                    <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-brand/10 rounded-full blur-[100px] group-hover:scale-150 transition-transform duration-1000"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer id="support" class="bg-white pt-32 pb-16">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 grid md:grid-cols-3 gap-20 mb-24 text-center md:text-left">
+            <div class="space-y-10">
+                <div class="flex items-center space-x-3 justify-center md:justify-start">
+                    <img src="http://collageresource.thinkyeah.com/bible/bible_logo.png" alt="Logo" class="w-8 h-8 opacity-80">
+                    <span class="text-xl font-bold tracking-tight">BibleChat</span>
+                </div>
+                <p class="text-gray-400 text-sm max-w-sm leading-relaxed font-light mx-auto md:mx-0">
+                    Advancing the Kingdom through thoughtful AI companionship. Rooted in timeless Biblical truth.
+                </p>
+            </div>
+            <div>
+                <h5 class="font-bold text-[10px] uppercase tracking-[0.4em] mb-10 text-gray-900">Support</h5>
+                <a href="mailto:biblechat.support@gmail.com" class="inline-block text-brand font-bold text-sm border-b-2 border-brand/20 pb-1 hover:border-brand transition-all">biblechat.support@gmail.com</a>
+            </div>
+            <div>
+                <h5 class="font-bold text-[10px] uppercase tracking-[0.4em] mb-10 text-gray-900">Compliance</h5>
+                <ul class="text-sm text-gray-400 space-y-5">
+                    <li><a href="#" id="privacyBtn" class="hover:text-brand transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 border-t border-gray-50 pt-12 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-300 font-bold uppercase tracking-[0.3em]">
+            <p>© 2026 BibleChat. For His Glory.</p>
+            <p class="mt-4 md:mt-0">Built with reverent craftsmanship.</p>
+        </div>
+    </footer>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden items-center justify-center p-6">
+        <div class="bg-white w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-[4rem] p-16 shadow-2xl relative">
+            <button onclick="closePrivacy()" class="absolute top-12 right-12 text-gray-300 hover:text-gray-900 transition-colors p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <img src="http://collageresource.thinkyeah.com/bible/bible_logo.png" alt="Logo" class="w-14 h-14 mx-auto mb-10">
+            <h2 class="serif text-4xl font-bold mb-10 text-center">Privacy Policy</h2>
+            <div class="space-y-10 text-gray-500 font-light leading-relaxed">
+                <p class="font-bold text-gray-900 text-center border-b border-gray-100 pb-10">Last Updated: March 4, 2026</p>
+                <div class="p-10 bg-brand-light/30 rounded-[3rem] border border-brand-light">
+                    <h3 class="text-brand font-bold uppercase tracking-widest text-[11px] mb-4">01. Data Sanctity</h3>
+                    <p>We do not track you to sell data. We collect only what is necessary to power your interactions.</p>
+                </div>
+            </div>
+            <button onclick="closePrivacy()" class="w-full mt-12 bg-black text-white py-6 rounded-[2.5rem] font-bold hover:bg-brand transition-all shadow-2xl active:scale-95">Accept & Close</button>
+        </div>
+    </div>
+
+    <script>
+        // 粒子背景
+        function createParticles() {
+            const container = document.getElementById('particle-container');
+            const count = 15;
+            for(let i=0; i<count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 3 + 2 + 'px';
+                p.style.width = size;
+                p.style.height = size;
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = Math.random() * 100 + 'vh';
+                p.style.animation = `float-particle ${Math.random() * 8 + 12}s infinite linear`;
+                p.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // 鼠标跟随
+        const glow = document.getElementById('mouse-glow');
+        window.addEventListener('mousemove', (e) => {
+            if (window.scrollY < 800) {
+                glow.style.opacity = '1';
+                glow.style.left = e.clientX - 300 + 'px';
+                glow.style.top = e.clientY - 300 + 'px';
+            }
+        });
+
+        // 显现观察者
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // 导航栏效果
+        window.onscroll = () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.style.backgroundColor = 'rgba(253, 250, 247, 0.9)';
+                nav.style.backdropFilter = 'blur(10px)';
+                nav.style.padding = '12px 0';
+                nav.style.borderColor = 'rgba(194, 145, 98, 0.1)';
+            } else {
+                nav.style.backgroundColor = 'transparent';
+                nav.style.backdropFilter = 'none';
+                nav.style.padding = '24px 0';
+                nav.style.borderColor = 'transparent';
+            }
+        };
+
+        // 弹窗逻辑
+        const modal = document.getElementById('privacyModal');
+        document.getElementById('privacyBtn').onclick = (e) => {
+            e.preventDefault();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        };
+        function closePrivacy() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
